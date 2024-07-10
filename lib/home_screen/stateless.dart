@@ -29,7 +29,7 @@ class SLess extends StatelessWidget {
                 builder: (context, value, child) {
                   return ElevatedButton(
                     onPressed: () {
-                      controller.isFunction();
+                      controller.onFunction();
                     },
                     child: const Text('Click'),
                   );
