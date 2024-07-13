@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:halfcontainerproject/home_screen/home_screen.dart';
-import 'package:halfcontainerproject/provider/provider_color.dart';
+import 'package:halfcontainerproject/screens/home_screen.dart';
+import 'package:halfcontainerproject/provider/dropdown_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -14,9 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) => ProviderColor(),
-        ),
+        ChangeNotifierProvider(create: (context) => ProviderDropDown()),
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
