@@ -1,9 +1,10 @@
-// ignore_for_file: unused_local_variable, sized_box_for_whitespace
+// ignore_for_file: unused_local_variable, sized_box_for_whitespace, use_build_context_synchronously
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:halfcontainerproject/model/chart_model.dart';
 import 'package:halfcontainerproject/provider/dropdown_provider.dart';
+import 'package:halfcontainerproject/screens/saved_chart_page.dart';
 import 'package:provider/provider.dart';
 
 class ViewChart extends StatelessWidget {
@@ -33,51 +34,64 @@ class ViewChart extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            SizedBox(
-              height: 50,
-              width: 200,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.blue),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      side: const BorderSide(color: Colors.white),
+            Expanded(
+              child: SizedBox(
+                height: 50,
+                width: 200,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                        side: const BorderSide(color: Colors.white),
+                      ),
                     ),
                   ),
-                ),
-                child: const Text(
-                  'Go Back',
-                  style: TextStyle(color: Colors.white),
+                  child: const Text(
+                    'Go Back',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             ),
-            SizedBox(
-              height: 50,
-              width: 200,
-              child: ElevatedButton(
-                onPressed: () async {
-                  var chartProvider =
-                      Provider.of<ProviderDropDown>(context, listen: false);
-                  var chartData = ChartData(chartType, data);
-                  await chartProvider.saveChart(chartData);
-                  print('saved successfully');
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.blue),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      side: const BorderSide(color: Colors.white),
+            Expanded(
+              child: SizedBox(
+                height: 50,
+                width: 200,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    var chartProvider =
+                        Provider.of<ProviderDropDown>(context, listen: false);
+                    var chartData = ChartData(chartType, data);
+                    await chartProvider.saveChart(chartData);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        backgroundColor: Colors.green,
+                        content: Text('Chart saved successfully!'),
+                      ),
+                    );
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SavedCharts()));
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                        side: const BorderSide(color: Colors.white),
+                      ),
                     ),
                   ),
-                ),
-                child: const Text(
-                  'Save Chart',
-                  style: TextStyle(color: Colors.white),
+                  child: const Text(
+                    'Save Chart',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             ),

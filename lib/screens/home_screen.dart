@@ -118,89 +118,93 @@ class HomeScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            SizedBox(
-              height: 50,
-              width: 200,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Get the data from the TextField
-                  List<double> data = _controller.text
-                      .split(',')
-                      .map((e) => double.tryParse(e.trim()) ?? 0)
-                      .toList();
+            Expanded(
+              child: SizedBox(
+                height: 50,
+                width: 200,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Get the data from the TextField
+                    List<double> data = _controller.text
+                        .split(',')
+                        .map((e) => double.tryParse(e.trim()) ?? 0)
+                        .toList();
 
-                  // Check if the data is empty or not before navigating
-                  if (data.isNotEmpty) {
-                    // Update the chart data in the provider
-                    provider.updateChartData(provider.selectChart, data);
-                    // Navigate to ViewChart with the updated data
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ViewChart(
-                          chartType: provider.selectChart,
-                          data: provider.getChartData(provider.selectChart)!,
-                        ),
-                      ),
-                    );
-                  } else {
-                    // Handle case where no valid data is entered
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text("Error"),
-                        content: const Text(
-                            "Please enter valid data in the TextField."),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text("OK"),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
+                    // Check if the data is empty or not before navigating
+                    if (data.isNotEmpty) {
+                      // Update the chart data in the provider
+                      provider.updateChartData(provider.selectChart, data);
+                      // Navigate to ViewChart with the updated data
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ViewChart(
+                            chartType: provider.selectChart,
+                            data: provider.getChartData(provider.selectChart)!,
                           ),
-                        ],
+                        ),
+                      );
+                    } else {
+                      // Handle case where no valid data is entered
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text("Error"),
+                          content: const Text(
+                              "Please enter valid data in the TextField."),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text("OK"),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                        side: const BorderSide(color: Colors.white),
                       ),
-                    );
-                  }
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.blue),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      side: const BorderSide(color: Colors.white),
                     ),
                   ),
-                ),
-                child: const Text(
-                  'View Chart',
-                  style: TextStyle(color: Colors.white),
+                  child: const Text(
+                    'View Chart',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             ),
-            SizedBox(
-              height: 50,
-              width: 200,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SavedCharts()),
-                  );
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.blue),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      side: const BorderSide(color: Colors.white),
+            Expanded(
+              child: SizedBox(
+                height: 50,
+                width: 200,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SavedCharts()),
+                    );
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                        side: const BorderSide(color: Colors.white),
+                      ),
                     ),
                   ),
-                ),
-                child: const Text(
-                  'Saved Charts',
-                  style: TextStyle(color: Colors.white),
+                  child: const Text(
+                    'Saved Charts',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             ),
