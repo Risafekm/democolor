@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:halfcontainerproject/provider/dropdown_provider.dart';
+import 'package:halfcontainerproject/screens/view_chart_page.dart';
+import 'package:provider/provider.dart';
 
-class SaveCharts extends StatelessWidget {
-  const SaveCharts({super.key});
+class SavedCharts extends StatelessWidget {
+  const SavedCharts({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<ProviderDropDown>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -36,6 +41,39 @@ class SaveCharts extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+      body: SafeArea(
+        child: ListView.builder(
+          itemCount: provider.savedCharts.length,
+          itemBuilder: (context, index) {
+            final chart = provider.savedCharts[index];
+            return Card(
+              child: ListTile(
+                title: Text(
+                  chart.chartType,
+                  style: const TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.normal),
+                ),
+                subtitle: Text(
+                  'Data: ${chart.data.join(', ')}',
+                  style: const TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.normal),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ViewChart(
+                        chartType: chart.chartType,
+                        data: chart.data,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
         ),
       ),
     );

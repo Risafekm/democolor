@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, recursive_getters, no_leading_underscores_for_local_identifiers
+
 import 'package:flutter/material.dart';
 import 'package:halfcontainerproject/provider/dropdown_provider.dart';
 import 'package:halfcontainerproject/screens/saved_chart_page.dart';
@@ -9,7 +11,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<ProviderDropDown>(context);
+    var provider = Provider.of<ProviderDropDown>(context, listen: false);
+    TextEditingController _controller = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -41,7 +45,7 @@ class HomeScreen extends StatelessWidget {
                         underline: const SizedBox(),
                         value: provider.selectChart,
                         onChanged: (value) {
-                          provider.setChart(value);
+                          provider.setChart(value!);
                         },
                         items: provider.chartList
                             .map<DropdownMenuItem<String>>((String value) {
@@ -57,15 +61,42 @@ class HomeScreen extends StatelessWidget {
               },
             ),
             // Display selected chart and input fields here
-            Center(
-              child: Container(
-                height: 500,
-                margin: const EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    //textfield area
-                    const SizedBox(height: 120),
-                    SizedBox(
+            Container(
+              height: 500,
+              margin: const EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  const SizedBox(height: 35),
+                  //textfield area for values inserting
+                  const Text(
+                    'Enter numbers using coma',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: 300,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextField(
+                          controller: _controller,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            focusedBorder: OutlineInputBorder(),
+                            hintText: "Enter values",
+                            hintStyle: TextStyle(
+                                fontSize: 13, fontWeight: FontWeight.normal),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: SizedBox(
                       height: 300,
                       child: Consumer<ProviderDropDown>(
                         builder: (context, provider, child) {
@@ -75,8 +106,8 @@ class HomeScreen extends StatelessWidget {
                         },
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -92,10 +123,45 @@ class HomeScreen extends StatelessWidget {
               width: 200,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const ViewChart()),
-                  );
+                  // Get the data from the TextField
+                  List<double> data = _controller.text
+                      .split(',')
+                      .map((e) => double.tryParse(e.trim()) ?? 0)
+                      .toList();
+
+                  // Check if the data is empty or not before navigating
+                  if (data.isNotEmpty) {
+                    // Update the chart data in the provider
+                    provider.updateChartData(provider.selectChart, data);
+                    // Navigate to ViewChart with the updated data
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ViewChart(
+                          chartType: provider.selectChart,
+                          data: provider.getChartData(provider.selectChart)!,
+                        ),
+                      ),
+                    );
+                  } else {
+                    // Handle case where no valid data is entered
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text("Error"),
+                        content: const Text(
+                            "Please enter valid data in the TextField."),
+                        actions: <Widget>[
+                          TextButton(
+                            child: const Text("OK"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  }
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.blue),
@@ -119,7 +185,8 @@ class HomeScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const SaveCharts()),
+                    MaterialPageRoute(
+                        builder: (context) => const SavedCharts()),
                   );
                 },
                 style: ButtonStyle(

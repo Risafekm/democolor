@@ -1,14 +1,33 @@
+// ignore_for_file: unused_local_variable, sized_box_for_whitespace
+
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:halfcontainerproject/screens/saved_chart_page.dart';
+import 'package:halfcontainerproject/model/chart_model.dart';
+import 'package:halfcontainerproject/provider/dropdown_provider.dart';
+import 'package:provider/provider.dart';
 
 class ViewChart extends StatelessWidget {
-  const ViewChart({super.key});
+  final String chartType;
+  final List<double> data;
+
+  const ViewChart({Key? key, required this.chartType, required this.data})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<ProviderDropDown>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         automaticallyImplyLeading: false,
+        title: Text(
+          '$chartType ',
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+        ),
+      ),
+      body: Center(
+        child: Container(height: 400, width: 500, child: _buildChart()),
       ),
       bottomNavigationBar: BottomAppBar(
         child: Row(
@@ -40,11 +59,12 @@ class ViewChart extends StatelessWidget {
               height: 50,
               width: 200,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SaveCharts()),
-                  );
+                onPressed: () async {
+                  var chartProvider =
+                      Provider.of<ProviderDropDown>(context, listen: false);
+                  var chartData = ChartData(chartType, data);
+                  await chartProvider.saveChart(chartData);
+                  print('saved successfully');
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.blue),
@@ -56,7 +76,7 @@ class ViewChart extends StatelessWidget {
                   ),
                 ),
                 child: const Text(
-                  'Saved Charts',
+                  'Save Chart',
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -65,5 +85,59 @@ class ViewChart extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildChart() {
+    switch (chartType) {
+      case 'Line Chart 1':
+      case 'Line Chart 2':
+        return LineChart(LineChartData(
+          lineBarsData: [
+            LineChartBarData(
+              spots: data
+                  .asMap()
+                  .entries
+                  .map((e) => FlSpot(e.key.toDouble(), e.value))
+                  .toList(),
+              isCurved: true,
+              color: const Color.fromARGB(255, 255, 191, 1),
+              barWidth: 2,
+              belowBarData: BarAreaData(show: false),
+            ),
+          ],
+        ));
+      case 'Bar Chart 1':
+      case 'Bar Chart 2':
+        return BarChart(BarChartData(
+          barGroups: data
+              .asMap()
+              .entries
+              .map((e) => BarChartGroupData(
+                    x: e.key,
+                    barRods: [
+                      BarChartRodData(
+                        toY: e.value,
+                        color: const Color.fromARGB(255, 74, 3, 204),
+                      )
+                    ],
+                  ))
+              .toList(),
+        ));
+      case 'Pie Chart 1':
+      case 'Pie Chart 2':
+        return PieChart(PieChartData(
+          sections: data
+              .asMap()
+              .entries
+              .map((e) => PieChartSectionData(
+                    value: e.value,
+                    color: Colors.primaries[e.key % Colors.primaries.length],
+                    title: '${e.value}',
+                  ))
+              .toList(),
+        ));
+      default:
+        return Container();
+    }
   }
 }

@@ -1,9 +1,11 @@
-// ignore_for_file: prefer_typing_uninitialized_variables
+// ignore_for_file: prefer_final_fields
 
 import 'package:flutter/material.dart';
-import 'package:halfcontainerproject/screens/widgets/bar_widget.dart';
-import 'package:halfcontainerproject/screens/widgets/linechart_widget.dart';
-import 'package:halfcontainerproject/screens/widgets/pie_widget.dart';
+import 'package:halfcontainerproject/model/chart_model.dart';
+import 'package:halfcontainerproject/screens/widgets/bar_chart/bar_widget.dart';
+import 'package:halfcontainerproject/screens/widgets/line_chart/linechart_widget.dart';
+import 'package:halfcontainerproject/screens/widgets/pie_chart/pie_widget.dart';
+import 'package:hive/hive.dart';
 
 class ProviderDropDown extends ChangeNotifier {
   var chartList = [
@@ -25,9 +27,51 @@ class ProviderDropDown extends ChangeNotifier {
     BarChartSample(),
     PieChartSample(),
   ];
+  List<ChartData> _saveCharts = [];
 
-  setChart(value) {
+  Map<String, List<double>> _chartData = {};
+  List<ChartData> get savedCharts => _saveCharts;
+
+  ProviderDropDown() {
+    _loadSavedCharts();
+  }
+
+  setChart(String value) {
     selectChart = value;
     notifyListeners();
+  }
+
+  List<double>? getChartData(String chartType) {
+    return _chartData[chartType];
+  }
+
+  void updateChartData(String chartType, List<double> data) {
+    try {
+      _chartData[chartType] = data;
+      notifyListeners();
+    } catch (e) {
+      print('Error update chart data: $e');
+    }
+  }
+
+  Future<void> saveChart(ChartData chartData) async {
+    try {
+      var box = await Hive.openBox<ChartData>('charts');
+      await box.add(chartData);
+      _saveCharts.add(chartData);
+      notifyListeners();
+    } catch (e) {
+      print('Error saving chart data: $e');
+    }
+  }
+
+  Future<void> _loadSavedCharts() async {
+    try {
+      var box = await Hive.openBox<ChartData>('charts');
+      _saveCharts = box.values.toList();
+      notifyListeners();
+    } catch (e) {
+      print('Error load saved chart data: $e');
+    }
   }
 }
