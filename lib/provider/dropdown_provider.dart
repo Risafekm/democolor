@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_final_fields
+// ignore_for_file: prefer_final_fields, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:halfcontainerproject/model/chart_model.dart';
@@ -27,6 +27,9 @@ class ProviderDropDown extends ChangeNotifier {
     BarChartSample(),
     PieChartSample(),
   ];
+
+  TextEditingController controller = TextEditingController();
+
   List<ChartData> _saveCharts = [];
 
   Map<String, List<double>> _chartData = {};

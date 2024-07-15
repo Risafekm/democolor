@@ -34,64 +34,60 @@ class ViewChart extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Expanded(
-              child: SizedBox(
-                height: 50,
-                width: 200,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.blue),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: const BorderSide(color: Colors.white),
-                      ),
+            SizedBox(
+              height: 50,
+              width: 200,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.blue),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      side: const BorderSide(color: Colors.white),
                     ),
                   ),
-                  child: const Text(
-                    'Go Back',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                ),
+                child: const Text(
+                  'Go Back',
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ),
-            Expanded(
-              child: SizedBox(
-                height: 50,
-                width: 200,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    var chartProvider =
-                        Provider.of<ProviderDropDown>(context, listen: false);
-                    var chartData = ChartData(chartType, data);
-                    await chartProvider.saveChart(chartData);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        backgroundColor: Colors.green,
-                        content: Text('Chart saved successfully!'),
-                      ),
-                    );
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SavedCharts()));
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.blue),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: const BorderSide(color: Colors.white),
-                      ),
+            SizedBox(
+              height: 50,
+              width: 200,
+              child: ElevatedButton(
+                onPressed: () async {
+                  var chartProvider =
+                      Provider.of<ProviderDropDown>(context, listen: false);
+                  var chartData = ChartData(chartType, data);
+                  await chartProvider.saveChart(chartData);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      backgroundColor: Colors.green,
+                      content: Text('Chart saved successfully!'),
+                    ),
+                  );
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SavedCharts()));
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.blue),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      side: const BorderSide(color: Colors.white),
                     ),
                   ),
-                  child: const Text(
-                    'Save Chart',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                ),
+                child: const Text(
+                  'Save Chart',
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ),
